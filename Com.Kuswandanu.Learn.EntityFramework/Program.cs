@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,17 @@ namespace Com.Kuswandanu.Learn.EntityFramework
             {
                 Console.Clear();
 
+                DbContextOptionsBuilder<BloggingContext> optionsBuilder = new DbContextOptionsBuilder<BloggingContext>();
+
+                optionsBuilder
+                    .UseInMemoryDatabase("LearnEntityFramework")
+                    .EnableSensitiveDataLogging()
+                    .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+
+                //optionsBuilder
+                //    .EnableSensitiveDataLogging()
+                //    .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Com.Kuswandanu.Learn.EntityFramework;Trusted_Connection=True;");
+
                 Console.WriteLine("Hello World!");
                 Console.WriteLine("1.  Create");
                 Console.WriteLine("2.  Read");
@@ -24,7 +36,7 @@ namespace Com.Kuswandanu.Learn.EntityFramework
                 Console.WriteLine("5.  Delete");
                 Console.WriteLine("x.  Exit");
                 Console.WriteLine("---");
-                using (var db = new BloggingContext())
+                using (var db = new BloggingContext(optionsBuilder.Options))
                 {
                     Data data = new Data(db);
 
